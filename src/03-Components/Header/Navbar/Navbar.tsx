@@ -1,76 +1,38 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
-import classes from './Navbar.module.css'
-import {PATH} from "../../Routes";
-import {Logout} from "../../../02-Features/auth/logaut/Logout";
+import s from './Navbar.module.css';
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "../../../01-redux/store";
+import {logout} from "../../../01-redux/auth-reducer";
+import {NoAuthorizedNav} from "../AuthorizedNav/NoAuthorizedNav";
+import {AuthorizedNav} from "../AuthorizedNav/AuthorizedNav";
+import SuperButton from "../../c2-SuperButton/SuperButton";
 
-type NavbarType = {
-    isCollapsed: boolean
-    setCollapsed: (isCollapsed: boolean) => void
-}
+export const Navbar = () => {
 
-function Navbar(props: NavbarType) {
-
-    const onClickItem = () => {
-        props.setCollapsed(true)
-    }
 //nya-admin@nya.nya1qazxcvBG
+    const dispatch = useDispatch()
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.login.isLogin)
+    /*
+        const UserName = useSelector<AppRootStateType, string | null>(state => state.login ? state.app.UserData.name : null)
+    */
+    const logoutOnClick = () => {
+        dispatch(logout())
+    }
     return (
-        <div className={props.isCollapsed ? classes.hidden : classes.menuContainer}>
-            <ul>
-                <li>
-                    <NavLink onClick={onClickItem}
-                             to={PATH.LOGIN}
-                             className={classes.menuItem}
-                             activeClassName={classes.highlight}>Login</NavLink>
 
-                </li>
-                <li>
-                    <NavLink onClick={onClickItem}
-                             to={PATH.REGISTRATION}
-                             className={classes.menuItem}
-                             activeClassName={classes.highlight}>Registration</NavLink>
-                </li>
-                <li>
-                    <NavLink onClick={onClickItem}
-                             to={PATH.PROFILE}
-                             className={classes.menuItem}
-                             activeClassName={classes.highlight}>Profile</NavLink>
-                </li>
-                <li>
-                    <NavLink onClick={onClickItem}
-                             to={PATH.RESET_PASSWORD}
-                             className={classes.menuItem}
-                             activeClassName={classes.highlight}>Reset Password</NavLink>
-                </li>
-                <li>
-                    <NavLink onClick={onClickItem}
-                             to={PATH.NEW_PASSWORD}
-                             className={classes.menuItem}
-                             activeClassName={classes.highlight}>New Password</NavLink>
-                </li>
-                <li>
-                    <NavLink onClick={onClickItem}
-                             to={PATH.PACKS}
-                             className={classes.menuItem}
-                             activeClassName={classes.highlight}>Packs</NavLink>
-                </li>
-                <li>
-                    <NavLink onClick={onClickItem}
-                             to={PATH.TEST}
-                             className={classes.menuItem}
-                             activeClassName={classes.highlight}>Test</NavLink>
-                </li>
-                <li><NavLink to={PATH.LOGIN}><Logout/></NavLink></li>
-                <li>
-                    <NavLink onClick={onClickItem}
-                             to={PATH.MODALS}
-                             className={classes.menuItem}
-                             activeClassName={classes.highlight}>Modals</NavLink>
-                </li>
-            </ul>
+        <div className={s.navbar}>
+
+            {!isLoggedIn && <NoAuthorizedNav/>}
+            {isLoggedIn && <> <AuthorizedNav/>
+
+                <span> < SuperButton onClick={logoutOnClick} name="Logout">
+                    LOGOUT
+                </SuperButton> </span>
+
+                {/*
+                <span className={s.userName}> {UserName} </span>
+*/}
+            </>}
         </div>
     );
 }
-
-export default Navbar;

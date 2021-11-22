@@ -1,0 +1,19 @@
+.nav {
+    height: 110px;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: nowrap;
+    font-size: 15px;
+    position: absolute;
+    right: 30%;
+    top: 10px;
+}
+
+.positionBtn {
+    position: absolute;
+    right: 10px;
+    top: 32px;
+}
