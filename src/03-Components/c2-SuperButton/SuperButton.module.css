@@ -1,0 +1,29 @@
+.buttonStyle {
+    margin: 10px 0;
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.buttonStyle:hover {
+    cursor: pointer;
+    background: #8f8eea;
+}
+
+.buttonStyle:active {
+    box-shadow: 0 0 10px black;
+    outline: none;
+}
+
+
+.default {
+    background: #5e5cdc;
+    font-style: italic;
+}
+
+.red {
+    background: red;
+}
+

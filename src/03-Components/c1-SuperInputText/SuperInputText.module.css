@@ -1,0 +1,24 @@
+.input {
+    background-color: white;
+    width: 250px;
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding-left: 12px;
+}
+.input:focus {
+    outline: none;
+}
+
+.superInput {
+    border: 1px solid black;
+}
+
+.errorInput {
+    border: 3px solid red;
+    box-shadow: 0 0 10px #ff002f;
+}
+
+.error {
+    color: red;
+}

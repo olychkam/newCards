@@ -1,0 +1,18 @@
+.formContainer {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.error {
+    color: red;
+    font-size: 16px;
+}
+
+.text {
+    text-decoration: none;
+    color:black;
+    font-size: 25px;
+}

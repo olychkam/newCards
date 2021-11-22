@@ -1,0 +1,18 @@
+.pageNumber {
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 20px;
+    font-family: Arial;
+    color: #282c34;
+}
+
+.currentPage {
+    color: #5e5cdc;
+}
+.paginationContainer button{
+    width: 80px;
+    height: 30px;
+    margin: 0 5px;
+}
+
+

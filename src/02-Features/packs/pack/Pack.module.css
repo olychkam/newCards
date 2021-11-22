@@ -1,0 +1,20 @@
+.packItem td{
+    padding: 10px 30px 10px 0;
+}
+
+.packItem button {
+    width: 70px;
+    height: 30px;
+    margin: 0 5px;
+}
+
+.packItem a{
+    text-decoration: none;
+    color: #273db0;
+    margin-left: 10px;
+}
+
+.packItem a:hover {
+    color: #606fbf;
+}
+

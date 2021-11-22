@@ -1,0 +1,22 @@
+.cardsContainer {
+    width: 80%;
+}
+
+.filtersContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.tableHeaders {
+    color: #5e5cdc;
+}
+
+.paginator {
+    text-align: right;
+}
+
+td {
+    padding: 10px 30px;
+}
+
