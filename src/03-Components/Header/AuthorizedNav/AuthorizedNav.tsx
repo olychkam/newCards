@@ -2,17 +2,18 @@ import React from "react";
 import {NavLink} from "react-router-dom";
 import s from './AuthorizedNav.module.css';
 import {PATH} from "../../Routes";
-import {Logout} from "../../../02-Features/auth/logaut/Logout";
+import logo from "../../../04-Assets/Study Point._free-file.png";
 
-type AuthorizedNav={
-    burgerNav?:boolean
+type AuthorizedNav = {
+    burgerNav?: boolean
 }
 
-export const AuthorizedNav=(props:AuthorizedNav) =>{
+export const AuthorizedNav = (props: AuthorizedNav) => {
 
 //nya-admin@nya.nya1qazxcvBG
     return (
-        <div className={props.burgerNav? s.burgerContainer:s.navContainer}>
+        <div className={props.burgerNav ? s.burgerContainer : s.navContainer}>
+            <img src={logo}/>
             <span>
                     <NavLink
                         to={PATH.PROFILE}
@@ -36,18 +37,6 @@ export const AuthorizedNav=(props:AuthorizedNav) =>{
                         to={PATH.PACKS}
                         className={s.menuItem}
                         activeClassName={s.highlight}>Packs</NavLink>
-                </span>
-            <span>
-                    <NavLink
-                        to={PATH.TEST}
-                        className={s.menuItem}
-                        activeClassName={s.highlight}>Test</NavLink>
-                </span>
-            <span>
-                    <NavLink
-                        to={PATH.MODALS}
-                        className={s.menuItem}
-                        activeClassName={s.highlight}>Modals</NavLink>
                 </span>
         </div>
     );
