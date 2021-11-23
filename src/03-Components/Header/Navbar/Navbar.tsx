@@ -25,10 +25,6 @@ export const Navbar = () => {
             {!isLoggedIn && <NoAuthorizedNav/>}
             {isLoggedIn && <> <AuthorizedNav/>
 
-                <span> < SuperButton onClick={logoutOnClick} name="Logout">
-                    LOGOUT
-                </SuperButton> </span>
-
                 {/*
                 <span className={s.userName}> {UserName} </span>
 */}

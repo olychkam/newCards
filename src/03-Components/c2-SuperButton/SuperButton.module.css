@@ -1,15 +1,16 @@
 .buttonStyle {
-    margin: 10px 0;
+    margin: 10px 7px;
     width: 100px;
     height: 40px;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
+
 }
 
 .buttonStyle:hover {
     cursor: pointer;
-    background: #8f8eea;
+    background: #d2c929;
 }
 
 .buttonStyle:active {
@@ -19,7 +20,7 @@
 
 
 .default {
-    background: #5e5cdc;
+    background: #f3f03c;
     font-style: italic;
 }
 
