@@ -4,21 +4,23 @@ import {logout} from "../../../01-redux/auth-reducer";
 import {AppRootStateType} from "../../../01-redux/store";
 import {Redirect} from "react-router-dom";
 import {PATH} from "../../../03-Components/Routes";
+import SuperButton from "../../../03-Components/c2-SuperButton/SuperButton";
 
 export const Logout = () => {
     const isLogin = useSelector<AppRootStateType, boolean>((state) => state.login.isLogin)
     let dispatch = useDispatch()
     const onClickHandler = () => {
         dispatch(logout())
-        return <Redirect to={PATH.LOGIN}/>
 
     }
-    if(!isLogin){
+    if (!isLogin) {
         return <Redirect to={PATH.LOGIN}/>
     }
     return (
-        <div onClick={onClickHandler}>
-            Logout
+        <div>
+                <span> < SuperButton onClick={onClickHandler} name="Logout">
+                    LOGOUT
+                </SuperButton> </span>
         </div>
     )
 }

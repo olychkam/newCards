@@ -10,8 +10,6 @@ function Header() {
         <div className={classes.navbarContainer}>
             <Navbar/>
             <BurgerNav/>
-            <span> <Logout /></span>
-
         </div>
     );
 }

@@ -15,11 +15,14 @@ import {AppRootStateType} from "../../01-redux/store";
 import SuperButton from "../../03-Components/c2-SuperButton/SuperButton";
 import Search from "../../03-Components/c5-Search/Search";
 import Paginator from "../../03-Components/c4-Paginator/Paginator";
+import {Redirect} from "react-router-dom";
+import {PATH} from "../../03-Components/Routes";
 
 const Packs = () => {
     const dispatch = useDispatch()
-    const packsParams = useSelector<AppRootStateType, PacksParamsType>((state:any) => state.packs.packsParams)
-    const packs = useSelector<AppRootStateType, Array<PackType>>((state:any) => state.packs.packsList)
+    const packsParams = useSelector<AppRootStateType, PacksParamsType>((state: any) => state.packs.packsParams)
+    const packs = useSelector<AppRootStateType, Array<PackType>>((state: any) => state.packs.packsList)
+    const isAuth = useSelector<AppRootStateType>((state) => state.login.isLogin)
 
     useEffect(() => {
         dispatch(fetchPacksTC(packsParams))
@@ -41,7 +44,9 @@ const Packs = () => {
     const deletePack = (id: string) => {
         dispatch(deletePackTC(id, packsParams))
     }
-
+    if (!isAuth) {
+        return <Redirect to={PATH.LOGIN}/>
+    }
     return (
         <div className={style.packsContainer}>
             <h2>Packs</h2>

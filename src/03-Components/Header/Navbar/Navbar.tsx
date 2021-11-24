@@ -25,6 +25,7 @@ export const Navbar = () => {
             {!isLoggedIn && <NoAuthorizedNav/>}
             {isLoggedIn && <> <AuthorizedNav/>
 
+
                 {/*
                 <span className={s.userName}> {UserName} </span>
 */}

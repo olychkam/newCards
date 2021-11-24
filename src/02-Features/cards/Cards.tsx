@@ -11,10 +11,11 @@ import {
     updateCardTC
 } from "../../01-redux/cards-reducer";
 import Card from "./Card/Card";
-import {useParams} from "react-router-dom";
+import {Redirect, useParams} from "react-router-dom";
 import {AppRootStateType} from "../../01-redux/store";
 import Paginator from "../../03-Components/c4-Paginator/Paginator";
 import SuperButton from "../../03-Components/c2-SuperButton/SuperButton";
+import {PATH} from "../../03-Components/Routes";
 
 type RoutesParamType = {
     id: string
@@ -23,6 +24,7 @@ const Cards = () => {
     const dispatch = useDispatch()
     const cardsParams = useSelector<AppRootStateType, CardsParamsType>((state) => state.cards.cardsParams)
     const cards = useSelector<AppRootStateType, Array<CardType>>((state) => state.cards.cardsList)
+    const isAuth = useSelector<AppRootStateType>((state) => state.login.isLogin)
 
     let {id} = useParams<RoutesParamType>()
 
@@ -36,18 +38,18 @@ const Cards = () => {
     }
     const addCard = () => {
         let card = {
-            answer : "this is the answer",
-            question : "this is the question,",
-            cardsPack_id : id,
-            grade : 3,
-            rating : 6,
-            shots : 2,
-            type : "card",
-            user_id : "",
-            created : "",
-            updated : "",
-            _v : 0,
-            _id : ""
+            answer: "this is the answer",
+            question: "this is the question,",
+            cardsPack_id: id,
+            grade: 3,
+            rating: 6,
+            shots: 2,
+            type: "card",
+            user_id: "",
+            created: "",
+            updated: "",
+            _v: 0,
+            _id: ""
         }
         dispatch(addCardTC(card, cardsParams))
     }
@@ -59,7 +61,9 @@ const Cards = () => {
     const deleteCard = (_id: string) => {
         dispatch(deleteCardTC(_id, cardsParams))
     }
-
+    if (!isAuth) {
+        return <Redirect to={PATH.LOGIN}/>
+    }
     return (
         <div className={style.cardsContainer}>
             <h2>Cards</h2>
