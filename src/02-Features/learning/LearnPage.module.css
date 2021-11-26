@@ -1,0 +1,43 @@
+.learnPageContainer {
+    background-color: #dbd816;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    justify-content: space-evenly;
+}
+
+.questionBlock {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+h4 {
+    margin-top: 0px;
+    text-align: center;
+}
+
+.buttonsBlock {
+    display: flex;
+    justify-content: space-around;
+}
+
+.answerBlock {
+    width: 80%;
+    height: 390px;
+}
+
+.answer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.buttonsBlock {
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,43 +1,44 @@
-import React from "react";
-import {PackType} from "../../../00-API/packs-api";
-import {NavLink} from "react-router-dom";
-import style from "./Pack.module.css"
-import SuperButton from "../../../03-Components/c2-SuperButton/SuperButton";
-import {PATH} from "../../../03-Components/Routes";
+import React, {ChangeEvent, useState} from "react";
+import s from "./Pack.module.css";
 
-type PackPropsType = {
-    pack: PackType
-    updatePack: (id: string) => void
-    deletePack: (id: string) => void
+type EditPackPropsType = {
+    packId: string
+    closeEditModal: () => void
+    updatePack: (id: string, name: string) => void
+    packName?: string
 }
 
-const Pack: React.FC<PackPropsType> = (props) => {
-    const onUpdateClick = () => {
-        props.updatePack(props.pack._id)
+export const EditPack: React.FC<EditPackPropsType> = props => {
+
+    const {packName= "packName"} = props
+
+    const [newName, setNewName] = useState<string>(packName)
+
+    const changePackNameHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setNewName(e.currentTarget.value)
     }
-    const onDeleteClick = () => {
-        props.deletePack(props.pack._id)
+    const updateCard = () => {
+        props.updatePack(props.packId, newName)
+        props.closeEditModal()
     }
-    const id = props.pack._id
+
+    const closeEditMode = () => {
+        props.closeEditModal()
+    }
 
     return (
-        <>
-            <tr className={style.packItem}>
-                <td>{props.pack.name}</td>
-                <td>{props.pack.cardsCount}</td>
-                <td>{props.pack.updated}</td>
-                <SuperButton onClick={onUpdateClick}>update</SuperButton>
-                <SuperButton onClick={onDeleteClick}>delete</SuperButton>
-                <td><NavLink
-                    to={`${PATH.CARDS}/${id}`}
-                >cards</NavLink></td>
-                <td><NavLink
-                    to={`${PATH.LEARNING}/${props.pack._id}`}
-                >learn</NavLink></td>
-            </tr>
-
-        </>
-    );
+        <div className={s.editContainer}>
+            <h3>Pack info</h3>
+            <div className={s.inputsBlock}>
+                <div className={s.editInput}>
+                    <label htmlFor="edit_pack">New name:</label>
+                    <input type="text" value={newName} onChange={changePackNameHandler} id="edit_pack"/>
+                </div>
+            </div>
+            <div className={s.buttonsBlock}>
+                <button className={s.cancelBtn} onClick={closeEditMode}>Cancel</button>
+                <button className={s.saveBtn} onClick={updateCard}>Save</button>
+            </div>
+        </div>
+    )
 }
-
-export default Pack;

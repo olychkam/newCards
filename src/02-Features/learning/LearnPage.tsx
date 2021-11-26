@@ -1,34 +1,28 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {LearnCard} from "./LearnCard/LearnCard";
-import {CardType} from "../../00-API/cards-api";
+import {CardType, ResponseCardType} from "../../00-API/cards-api";
 import {useDispatch, useSelector} from "react-redux";
-import {Redirect, useParams } from "react-router-dom";
-import {CardsParamsType, fetchCardsTC, sendGrade, setPackIdAC} from "../../01-redux/cards-reducer";
+import {fetchCardsTC, setCardGradeTC} from "../../01-redux/cards-reducer";
 import {AppRootStateType} from "../../01-redux/store";
-import {PATH} from "../../03-Components/Routes";
+import {PackType} from "../../00-API/packs-api";
+import {getRandomCard} from "../../05-utils/u1-error/u2-getRandomCard/getRandomCard";
+import styles from './LearnPage.module.css';
 
-type LearningPageType = {}
-const grades = ['no idea', 'forgot', 'think long', 'mix up', 'knew'];
-const randomCard = (cards: CardType[]) => {
-    const sum = cards.reduce((acc, card) => acc + (6 - card.grade) * (6 - card.grade), 0);
-    const rand = Math.random() * sum;
-    const res = cards.reduce((acc: { sum: number, id: number }, card, i) => {
-            const newSum = acc.sum + (6 - card.grade) * (6 - card.grade);
-            return {sum: newSum, id: newSum < rand ? i : acc.id}
-        }
-        , {sum: 0, id: -1});
-    console.log('test: ', sum, rand, res)
-
-    return cards[res.id + 1];
+type LearnPagePropsType = {
+    cardsPack_id: string
+    onModalClose: () => void
 }
 
-export const LearningPage: React.FC<LearningPageType> =  React.memo(() => {
-    const cards = useSelector<AppRootStateType, CardType[]>((state:any) => state.cards.cardsList)
-    const isAuth=useSelector<AppRootStateType,boolean>((state:any) => state.login.isLogin)
-    const {cardsPack_id} = useParams<{ cardsPack_id: string }>();
+const grades = ["Didn't know", 'Forgot', 'Confused', 'A lot of thought', 'Knew'];
+
+const LearnPage: React.FC<LearnPagePropsType> = (props) => {
+    const {cardsPack_id} = props
+    const packName = useSelector<AppRootStateType, PackType | undefined>(state => state.packs.cardPacks && state.packs.cardPacks.find(pack => pack._id === cardsPack_id));
+    const cards = useSelector<AppRootStateType, Array<CardType>>(state => state.cards.cards);
+    const [isChecked, setIsChecked] = useState<boolean>(false);
+    const [first, setFirst] = useState<boolean>(true);
+    const [grade, setGrade] = useState(grades.indexOf(grades[0]) + 1)
     const [card, setCard] = useState<CardType>({
         _id: 'fake',
-        //cardsPack_id : id
         cardsPack_id: '',
         answer: 'answer fake',
         question: 'question fake',
@@ -40,47 +34,62 @@ export const LearningPage: React.FC<LearningPageType> =  React.memo(() => {
         __v: 0,
         created: '',
         updated: '',
-    } as CardType)
-    const [firstCard, setFirstCard] = useState<boolean>(true)
-    const [checked,setChecked]=useState<boolean>(false)
-    const cardsParams = useSelector<AppRootStateType, CardsParamsType>((state:any) => state.cards.cardsParams)
-    const dispatch = useDispatch()
+    });
+
+    const dispatch = useDispatch();
     useEffect(() => {
-        if (firstCard) {
-            dispatch(setPackIdAC(cardsPack_id))
-
-            dispatch(fetchCardsTC(cardsParams))
-            setFirstCard(false)
+        if (first) {
+            dispatch(fetchCardsTC({cardsPack_id}));
+            setFirst(false);
         }
-        if (cards.length > 0) {
-            setCard(randomCard(cards))
-            return () => {
-                console.log('Learning Page clear effect ')
-            }
-        } else {
-
+        if (cards && cards.length > 0) setCard(getRandomCard(cards));
+        return () => {
         }
-    }, [cards,cardsParams.cardsPack_id, dispatch])
+    }, [dispatch, cardsPack_id, cards, first]);
 
-    const onNextCard = useCallback((grade: number) => {
-        setChecked(false);
-        if (cards.length > 0) {
-            if(!card._id) {
-                console.log('error in useCallback')
-            }
-            dispatch(sendGrade(grade, card._id))
-            setCard(randomCard(cards))
-        } else {
-            alert(`Something bad 'onNextCard'`)
+    const onNext = (grade: number, id: string) => {
+        setIsChecked(false);
+        dispatch(setCardGradeTC(grade, id))
+        if (cards && cards.length > 0) {
+            setCard(getRandomCard(cards));
         }
-    }, [cards, card])
-    if (!isAuth) {
-        return <Redirect to={PATH.LOGIN}/>
     }
+
+    const checkAnswer = () => {
+        setIsChecked(true)
+    }
+
     return (
-        <div>
-            <LearnCard card={card} checked={checked} grades={grades}
-                       onNextCard={onNextCard} setIsChecked={setChecked} />
+        <div className={styles.learnPageContainer}>
+            <h3>Learn "{packName?.name}"</h3>
+            {!isChecked &&
+            <div className={styles.questionBlock}>
+                <h4>Question: "{card.question}"</h4>
+                <div className={styles.buttonsBlock}>
+                    <button className={styles.cancelBtn} onClick={props.onModalClose}>cancel</button>
+                    <button className={styles.saveBtn} onClick={checkAnswer}>show answer</button>
+                </div>
+            </div>
+            }
+            {isChecked && (
+                <div className={styles.answerBlock}>
+                    <h4>Question: "{card.question}"</h4>
+                    <h4>Answer: "{card.answer}"</h4>
+                    <div className={styles.answer}>
+                        <h4>Rate yourself: </h4>
+                        {/* <SuperRadio name={'radio'}
+                                    value={grade}
+                                    options={grades}
+                                    onChangeOption={setGrade}/>
+                    </div>*/}
+                        <div className={styles.buttonsBlock}>
+                            <button className={styles.cancelBtn} onClick={props.onModalClose}>cancel</button>
+                            <button className={styles.saveBtn} onClick={() => onNext(grade, card._id)}>next</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-    )
-})
+    );
+};
+export default LearnPage;

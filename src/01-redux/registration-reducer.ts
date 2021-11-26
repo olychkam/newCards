@@ -1,55 +1,43 @@
 import {Dispatch} from "react";
 import {registrationAPI} from "../00-API/registration-api";
-import {AppRootStateType} from "./store";
+import {AppRootStateType, AppThunkType} from "./store";
+import {setAppStatusAC} from "./app-reducer";
+import {authAPI} from "../00-API/auth-api";
 
-type RegistrationStateType = {
-    isRegistered: boolean,
-    error: string | null
-}
-const initialState: RegistrationStateType = {
-    isRegistered: false,
-    error: null
+export type RegisterReducerActionType = ReturnType<typeof setIsRegistrationDataAC>
+
+type RegisterType = {
+    isRegistration: boolean
 }
 
-export const registrationReducer = (state: RegistrationStateType = initialState, action: ActionsType): RegistrationStateType => {
+const initialState = {} as RegisterType
+
+type InitialStateType = typeof initialState
+
+export const registrationReducer = (state: InitialStateType = initialState, action: RegisterReducerActionType): InitialStateType => {
     switch (action.type) {
-        case "TOGGLE_IS_REGISTERED": {
-            return {...state, ...action.payload}
-        }
-        case "SET_ERROR":{
-            return {...state, ...action.payload}
-        }
+        case "REGISTER/SET-IS-REGISTRATION-DATA":
+            return {
+                ...state,
+                isRegistration: action.isRegistration
+            }
         default:
-            return state;
+            return state
     }
 }
 
-export const ToggleIsRegisteredAC = (isRegistered: boolean) => ({
-    type: "TOGGLE_IS_REGISTERED",
-    payload: {
-        isRegistered
-    }
-} as const)
+const setIsRegistrationDataAC = (isRegistration: boolean) =>
+    ({type: "REGISTER/SET-IS-REGISTRATION-DATA", isRegistration} as const)
 
-export const SetErrorAC = (error: string | null) => ({
-    type: "SET_ERROR",
-    payload: {
-        error
-    }
-} as const)
-
-
-export const RegisterUserTC = (email: string, password: string) => (dispatch: ThunkDispatch,  getState: () => AppRootStateType) => {
-    registrationAPI.registerUser(email, password)
-        .then((res) => {
-            dispatch(ToggleIsRegisteredAC(true))
-        }).catch((error) => {
-            dispatch(SetErrorAC(error.response.data.error))
-    })
+export const registerTC = (email: string, password: string): AppThunkType => dispatch => {
+    dispatch(setAppStatusAC("loading"))
+    authAPI.register(email, password)
+        .then(() => {
+            dispatch(setIsRegistrationDataAC(true))
+            dispatch(setAppStatusAC("succeeded"))
+        })
+        .catch(response => {
+            console.log(response.error)
+            dispatch(setAppStatusAC('failed'))
+        })
 }
-
-type ActionsType =
-    | ReturnType<typeof ToggleIsRegisteredAC>
-    | ReturnType<typeof SetErrorAC>
-
-type ThunkDispatch = Dispatch<ActionsType>

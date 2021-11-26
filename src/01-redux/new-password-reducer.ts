@@ -1,37 +1,43 @@
 import {passwordAPI} from "../00-API/api-password";
 import {Dispatch} from "redux";
+import {setAppStatusAC} from "./app-reducer";
+import {authAPI} from "../00-API/auth-api";
+import {AppThunkType} from "./store";
 
-export const SET_RECOVERY_PASSWORD = 'SET-RECOVERY-PASSWORD';
+export type EnterNewPasswordReducerActionType = ReturnType<typeof setIsNewPasswordAC>
 
-
-type ActionsType = ReturnType<typeof setRecoveryPassword>
-type NewPasswordStateType = {
-    isForgot: boolean
+type EnterNewPasswordType = {
+    isNewPassword: boolean
 }
-const initialState = {} as NewPasswordStateType
 
-export const newPasswordReducer = (state: NewPasswordStateType = initialState, action: ActionsType): NewPasswordStateType => {
+const initialState = {} as EnterNewPasswordType
+
+type InitialStateType = typeof initialState
+
+export const newPasswordReducer = (state: InitialStateType = initialState, action: EnterNewPasswordReducerActionType) => {
     switch (action.type) {
-        case "SET-RECOVERY-PASSWORD":
+        case "ENTER-NEW-PASSWORD/SET-IS-NEW-PASSWORD":
             return {
                 ...state,
-                isForgot: action.isForgot
+                isNewPassword: action.isNewPassword
             }
         default:
-            return state;
+            return state
     }
 }
-export const setRecoveryPassword = (isForgot: boolean) => ({
-    type: SET_RECOVERY_PASSWORD,
-    isForgot
-}as const)
 
-export const recoveryPasswordTC = (email: string) => (dispatch: Dispatch) => {
-    passwordAPI.recoveryPassword(email)
+export const setIsNewPasswordAC = (isNewPassword: boolean) =>
+    ({type: "ENTER-NEW-PASSWORD/SET-IS-NEW-PASSWORD", isNewPassword} as const)
+
+export const setNewPasswordTC = (newPassword: string, passwordToken: string): AppThunkType => dispatch => {
+    dispatch(setAppStatusAC("loading"))
+    authAPI.newPassword(newPassword, passwordToken)
         .then(() => {
-            dispatch(setRecoveryPassword(true))
+            dispatch(setAppStatusAC("succeeded"))
+            dispatch(setIsNewPasswordAC(true))
         })
-        .catch(res => {
-            console.log(res.error)
+        .catch(response => {
+            console.log(response.error)
+            dispatch(setAppStatusAC("failed"))
         })
 }

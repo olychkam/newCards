@@ -21,23 +21,18 @@ export const AuthorizedNav = (props: AuthorizedNav) => {
                         className={s.menuItem}
                         activeClassName={s.highlight}>Profile</NavLink>
                 </span>
+
             <span>
                     <NavLink
-                        to={PATH.RESET_PASSWORD}
+                        to={PATH.PACKS}
                         className={s.menuItem}
-                        activeClassName={s.highlight}>Reset Password</NavLink>
+                        activeClassName={s.highlight}>Packs</NavLink>
                 </span>
             <span>
                     <NavLink
                         to={PATH.NEW_PASSWORD}
                         className={s.menuItem}
                         activeClassName={s.highlight}>New Password</NavLink>
-                </span>
-            <span>
-                    <NavLink
-                        to={PATH.PACKS}
-                        className={s.menuItem}
-                        activeClassName={s.highlight}>Packs</NavLink>
                 </span>
             <span className={s.item}><Logout/></span>
         </div>

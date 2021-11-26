@@ -1,9 +1,88 @@
 import {instance} from "./api";
-import {PacksParamsType} from "../01-redux/packs-reducer";
+
+export type PackType = {
+    _id: string,
+    user_id: string,
+    user_name: string,
+    private: boolean,
+    name: string,
+    path: string,
+    grade: number,
+    shots: number,
+    deckCover: string,
+    cardsCount: number,
+    type: string,
+    rating: number,
+    created: string,
+    updated: string,
+    more_id: string,
+    __v: number
+}
+
+export type ResponsePackType = {
+    cardPacks: Array<PackType>
+    page: number
+    pageCount: number
+    cardPacksTotalCount: number,
+    minCardsCount: number
+    maxCardsCount: number
+    token: string
+    tokenDeathTime: number
+}
+
+//type for get packs
+export type FetchPacksPayloadType = {
+    packName?: string
+    min?: number
+    max?: number
+    sortPacks?: string
+    page?: number
+    pageCount?: number
+    user_id?: string | null
+}
+
+//type for post
+export type CardsPackCreateType = {
+    name?: string
+    path?: string
+    grade?: number
+    shots?: number
+    rating?: number
+    deckCover?: string
+    private?: boolean
+    type?: string
+}
+
 
 export const packsAPI = {
-    fetchPacks(packsParams: PacksParamsType) {
-        return instance.get<ResponseType>('cards/pack', {params: {...packsParams}});
+    fetchPacks(data: FetchPacksPayloadType) {
+        return instance.get<ResponsePackType>(`cards/pack?`,
+            {params: {...data}})
+            .then(response => response.data)
+    },
+    createPack(cardsPack: Partial<CardsPackCreateType>) {
+        return instance.post(`cards/pack`, {cardsPack})
+            .then(response => response.data)
+    },
+    deletePack(id: string) {
+        return instance.delete(`cards/pack?id=${id}`)
+            .then(response => response.data)
+    },
+    updatePack(_id: string, name ?: string) {
+        return instance.put(`cards/pack`, {cardsPack: {_id, name}})
+            .then(response => response.data)
+    }
+}
+
+/*
+export const packsAPI = {
+    getPacks(pageCount: number = 7, page: number = 1, packName: string = '', min: number, max: number, id: string) {
+        return instance.get<any>(`/cards/pack/?packName=${packName}&pageCount=${pageCount}&page=${page}&sortPacks=&min=${min}&max=${max}&user_id=${id}`)
+    },
+    fetchPacks(data: PacksParamsType) {
+        return instance.get<ResponseType>(`cards/pack?`,
+            {params: {...data}})
+            .then(response => response.data)
     },
     addPack() {
         return instance.post('cards/pack', {cardsPack: {name: "Testik 2", type: "pack"}})
@@ -16,7 +95,7 @@ export const packsAPI = {
     }
 }
 
-type ResponseType = {
+export type ResponseType = {
     cardPacks: Array<PackType>
     cardPacksTotalCount: number
     maxCardsCount: number
@@ -45,3 +124,4 @@ export type PackType = {
     __v: number
     _id: string
 }
+*/

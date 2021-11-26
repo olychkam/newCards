@@ -1,20 +1,27 @@
-.packItem td{
-    padding: 10px 30px 10px 0;
+.editContainer {
+    background-color: #dbd816;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 8px;
+    height: 100%;
+    width: 100%;
 }
 
-.packItem button {
-    width: 70px;
-    height: 30px;
-    margin: 0 5px;
+.inputsBlock {
+    width: 80%;
 }
 
-.packItem a{
-    text-decoration: none;
-    color: #273db0;
-    margin-left: 10px;
+.editInput {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
 }
 
-.packItem a:hover {
-    color: #606fbf;
+.buttonsBlock {
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
 }
-

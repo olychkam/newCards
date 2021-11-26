@@ -1,5 +1,5 @@
 import {AppRootStateType} from "../store";
-import {UserType} from "../auth-reducer";
+import {UserDataType} from "../profile-reducer";
 
-export const selectorUserData = (state: AppRootStateType): UserType => state.login.user
-export const selectorIsLoggedIn = (state: AppRootStateType) => state.login.isLogin
+export const selectorUserData = (state: AppRootStateType):UserDataType => state.profile.userData
+export const selectorIsLoggedIn = (state: AppRootStateType) => state.login.isLoggedIn

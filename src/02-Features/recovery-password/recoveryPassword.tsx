@@ -1,13 +1,13 @@
 import React, {ChangeEvent, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {NavLink, Redirect} from "react-router-dom";
-import {recoveryPasswordTC} from "../../01-redux/new-password-reducer";
 import s from "../auth/login/Login.module.css";
 import {AppRootStateType} from "../../01-redux/store";
 import {PATH} from "../../03-Components/Routes";
 import SuperButton from "../../03-Components/c2-SuperButton/SuperButton";
+import {forgotPasswordTC} from "../../01-redux/recovery-password-reducer";
 
-function NewPassword() {
+function RecoveryPassword() {
     const isForgot = useSelector<AppRootStateType, boolean>((state:any) => state.newPassword.isForgot)
     const [isRecoveryPassword, setIsRecoveryPassword] = useState<string>('')
     const dispatch = useDispatch();
@@ -15,7 +15,7 @@ function NewPassword() {
         setIsRecoveryPassword(e.currentTarget.value)
     }
     const sendEmail = () => {
-        dispatch(recoveryPasswordTC(isRecoveryPassword))
+        dispatch(forgotPasswordTC(isRecoveryPassword))
     }
     if (isForgot) {
         return <Redirect to={PATH.RESET_PASSWORD}/>
@@ -24,7 +24,7 @@ function NewPassword() {
         <div className={s.formContainer}>
             <form>
                 <span>Email:</span>
-                <div><input type={'email'} onChange={onChangePasswordHandler}/>
+                <div>olgamartynovaaa@gmail.com<input type={'email'} onChange={onChangePasswordHandler}/>
                 </div>
                 <div>
                     <div><SuperButton onClick={sendEmail}>Send</SuperButton></div>
@@ -38,4 +38,4 @@ function NewPassword() {
     );
 }
 
-export default NewPassword;
+export default RecoveryPassword;

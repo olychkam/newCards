@@ -25,6 +25,12 @@ export const NoAuthorizedNav = (props: NoAuthorizedNav) => {
                         className={s.menuItem}
                         activeClassName={s.highlight}>Registration</NavLink>
             </span>
+            <span>
+                    <NavLink
+                        to={PATH.RESET_PASSWORD}
+                        className={s.menuItem}
+                        activeClassName={s.highlight}>Reset</NavLink>
+            </span>
         </div>
     );
 }

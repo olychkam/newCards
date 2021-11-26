@@ -1,15 +1,83 @@
 import {loginAPI} from "../00-API/login-api";
-import {AppThunk} from "./store";
+import {AppRootStateType, AppThunkType} from "./store";
+import {ThunkDispatch} from "redux-thunk";
+import {Dispatch} from "redux";
+import {setAppStatusAC} from "./app-reducer";
+import {authAPI} from "../00-API/auth-api";
+import {setUserProfileDataAC} from "./profile-reducer";
+
+export type AuthReducerActionType = SetIsLoggedInActionType
+    | SetLoginErrorActionType
+
+export type SetIsLoggedInActionType = ReturnType<typeof setIsLoggedIn>
+export type SetLoginErrorActionType = ReturnType<typeof setLoginError>
+type InitialStateType = { isLoggedIn: boolean, loginError: null | string }
+
+
+const initialState = {
+    isLoggedIn: false,
+    loginError: null
+}
+
+
+export const authReducer = (state: InitialStateType = initialState, action: AuthReducerActionType): InitialStateType => {
+    switch (action.type) {
+        case 'auth/SET-IS-LOGGED-IN': {
+            return {...state, isLoggedIn: action.isLoggedIn}
+        }
+        case 'auth/SET-LOGIN-ERROR': {
+            return {...state, loginError: action.loginError}
+        }
+        default:
+            return state
+    }
+}
+
+//actions
+export const setIsLoggedIn = (isLoggedIn: boolean) => ({type: 'auth/SET-IS-LOGGED-IN', isLoggedIn} as const)
+export const setLoginError = (loginError: string) => ({type: 'auth/SET-LOGIN-ERROR', loginError} as const)
+
+//thunks
+export const loginTC = (email: string, password: string, rememberMe: boolean): AppThunkType => dispatch => {
+    dispatch(setAppStatusAC('loading'))
+    authAPI.login(email, password, rememberMe)
+        .then(response => {
+            const {email, _id, avatar, name, publicCardPacksCount} = response;
+            dispatch(setUserProfileDataAC({email, _id, avatar, name, publicCardPacksCount}));
+            dispatch(setIsLoggedIn(true));
+            dispatch(setAppStatusAC('succeeded'))
+        })
+        .catch(e => {
+            const error = e.response ? e.response.data.error : (e.message + ', more details in the console')
+            dispatch(setLoginError(error));
+            dispatch(setAppStatusAC('failed'));
+        })
+}
+
+export const logOutTC = (): AppThunkType => dispatch => {
+    dispatch(setAppStatusAC('loading'))
+    authAPI.logout()
+        .then(() => {
+            dispatch(setIsLoggedIn(false));
+            dispatch(setAppStatusAC('succeeded'))
+        })
+        .catch(error => {
+            console.log(error)
+            dispatch(setAppStatusAC('failed'));
+        })
+}
+
+
+
+/*
 
 export const SET_IS_LOGIN = 'SET-IS-LOGIN';
-export const SET_ERROR = "SET_ERROR";
 export const SET_DATA = "SET_DATA";
 
-export type ActionsLoginType = ReturnType<typeof setLoginAC> | ReturnType<typeof setError> | ReturnType<typeof setData>
+export type ActionsLoginType = ReturnType<typeof setLoginAC> | ReturnType<typeof setData>
 type LoginStateType = {
     user: UserType
     isLogin: boolean
-    error: string | null
 }
 export type UserType = {
     _id: string;
@@ -39,16 +107,12 @@ const initialState: LoginStateType = {
         _id: '',
     },
     isLogin: false,
-    error: null
 }
 
 export const authReducer = (state: LoginStateType = initialState, action: ActionsLoginType): LoginStateType => {
     switch (action.type) {
         case "SET_IS_LOGIN":
             return {...state, isLogin: action.isLoggedIn};
-        case "SET_ERROR": {
-            return {...state, error: action.error}
-        }
         case "SET_DATA": {
             return {...state, user: action.userData}
         }
@@ -61,47 +125,52 @@ export const setLoginAC = (isLoggedIn: boolean) => ({
     isLoggedIn
 } as const)
 
-export const setError = (error: string | null) => ({
-    type: "SET_ERROR",
-    error
-} as const)
-
 export const setData = (userData: UserType) => ({
     type: "SET_DATA",
     userData
 } as const)
 
-export const login = (email: string, password: string, rememberMe: boolean): AppThunk =>
-    (dispatch) => {
-        loginAPI.login(email, password, rememberMe)
-            .then((response) => {
-                dispatch(setLoginAC(true))
-                dispatch(setData(response.data))
-                dispatch(setError(null))
-            })
-            .catch((e) => {
-                const error = e.response ? e.response.data.error : (e.message + ', more details in the console')
-                dispatch(setError(error))
-            })
+export const login = (email: string, password: string, rememberMe: boolean): AppThunk => async (dispatch: Dispatch) => {
+    dispatch(setAppStatus({status: 'loading', error: null}))
+    try {
+        const res = await loginAPI.login(email, password, rememberMe)
+        dispatch(setData(res.data))
+        dispatch(setLoginAC(true))
+        dispatch(setAppStatus({status: 'succeeded', error: null}))
 
+    } catch (e) {
+        const error = e.response ? e.response.data.error : (e.message + ', more details in the console')
+        dispatch(setAppStatus({status: 'failed', error: error}))
     }
+
+}
 export const logout = (): AppThunk =>
-    (dispatch) => {
-        loginAPI.logout()
-            .then(response => {
-                dispatch(setLoginAC(false))
-                dispatch(setError(null))
-                alert(response.data.info)
-
-            })
-            .catch((e) => {
-                const error = e.response ? e.response.data.error : (e.message + ', more details in the console')
-                alert(error)
-                dispatch(setError(error))
-            })
+    async (dispatch: Dispatch) => {
+        dispatch(setAppStatus({status: 'loading', error: null}))
+        try {
+            const res = await loginAPI.logout()
+            dispatch(setData(res.data))
+            dispatch(setLoginAC(false))
+            dispatch(setAppStatus({status: 'succeeded', error: null}))
+        } catch (e) {
+            const error = e.response ? e.response.data.error : (e.message + ', more details in the console')
+            dispatch(setAppStatus({status: 'failed', error: error}))
+        }
 
     }
 
+export const getAuthUserData = () => async (dispatch: Dispatch) => {
+    dispatch(setAppStatus({status: 'loading', error: null}))
+    try {
+        const res = await loginAPI.me()
+        dispatch(setData(res.data))
+        dispatch(setAppStatus({status: 'succeeded', error: null}))
+        dispatch(setLoginAC(true))
+    } catch (e) {
+        const error = e.response ? e.response.data.error : (e.message + ', more details in the console')
+        dispatch(setAppStatus({status: 'failed', error: error}))
+    }
+}
 
 
-
+*/

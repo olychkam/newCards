@@ -20,7 +20,6 @@ function Login(props: LoginType) {
             <div><SuperInputText type={'password'} placeholder={'Password'} onChange={props.onChangeHandlerPassword}/>
             </div>
             <div><SuperCheckbox onChange={props.onChangeHandlerRememberMe}>Remember Me</SuperCheckbox></div>
-            {props.error&&<span className={s.error}>{props.error}</span>}
             <div><SuperButton onClick={props.onClickHandler}>Sign In</SuperButton></div>
         </div>
 

@@ -1,56 +1,31 @@
-import React, {ChangeEvent, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {setNewPasswordTC, setResetPassword} from "../../01-redux/reset-password-reducer";
-import {NavLink, Redirect, RouteComponentProps, useParams} from "react-router-dom";
-import s from "../auth/login/Login.module.css";
-import {AppRootStateType} from "../../01-redux/store";
 import {PATH} from "../../03-Components/Routes";
-import SuperButton from "../../03-Components/c2-SuperButton/SuperButton";
+import {CommonForm} from "../../03-Components/c8-CommonForm/CommonForm";
+import {useEffect} from "react";
+import {RequestStatusType} from "../../01-redux/app-reducer";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "../../01-redux/store";
+import {Redirect, useHistory, useParams} from "react-router-dom";
+import {CircularProgress} from "@material-ui/core";
+import {setNewPasswordTC} from "../../01-redux/new-password-reducer";
 
-/*
-type PathParamsType = {
-    token: string
-}
-type PropsType = RouteComponentProps<PathParamsType>
-*/
-
-const ResetPassword: React.FC = (props) => {
-    const [newPassword, setNewPassword] = useState<string>('')
-    const [repeatNewPassword, setRepeatNewPassword] = useState<string>("")
+export const ResetPassword = () => {
     const dispatch = useDispatch()
-    const {token} = useParams<Record<string, string>>();
-    const isNewPassword = useSelector<AppRootStateType, boolean>((state:any) => state.resetPassword.isNewPassword)
-    const tokenName = token ? token : ''
-    const onChangeNewPassword = (e: ChangeEvent<HTMLInputElement>) => {
-        setNewPassword(e.currentTarget.value)
+    const {token} = useParams<{token: string}>()
+    const isPasswordChanged = useSelector<AppRootStateType, boolean>(state => state.resetPassword.isNewPassword)
+    const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status)
+
+    const newPasswordCallBack = (values: any) => {
+        dispatch(setNewPasswordTC(values.password, token))
     }
-    const onChangeRepeatPassword = (e: ChangeEvent<HTMLInputElement>) => {
-        setRepeatNewPassword(e.currentTarget.value)
+
+    if(isPasswordChanged) {
+        return <Redirect to={"/login"}/>
     }
-    const onClickNewPassword = () => {
-        if (newPassword === repeatNewPassword) {
-            dispatch(setNewPasswordTC(newPassword, tokenName))
-        } else {
-            alert('Password mismatch')
-        }
-    }
-    if (isNewPassword) {
-        return <Redirect to={PATH.LOGIN}/>}
+
     return (
-        <div className={s.formContainer}>
-            <div>Reset Password</div>
-            <form><input type={'password'} onChange={onChangeNewPassword}/>
-                <input type={'password'} onChange={onChangeRepeatPassword}/>
-                <div>
-                    <div><SuperButton onClick={onClickNewPassword}>Send</SuperButton></div>
-                </div>
-            </form>
-            <div>
-                <NavLink className={s.text} to={PATH.LOGIN}>Login</NavLink>
-            </div>
-        </div>
-    );
+        <>
+            {status === "loading" && <CircularProgress/>}
+            <CommonForm type={'New password'} callBack={newPasswordCallBack}/>
+        </>
+    )
 }
-
-export default ResetPassword;
-
