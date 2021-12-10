@@ -16,8 +16,8 @@ function Login(props: LoginType) {
     return (
         <div className={s.formContainer}>
             <div>SIGN IN</div>
-            <SuperInputText type={'email'} placeholder={'Enter email'} onChange={props.onChangeHandlerEmail}/>
-            <div><SuperInputText type={'password'} placeholder={'Password'} onChange={props.onChangeHandlerPassword}/>
+            <SuperInputText type={'email'} placeholder={'test-login@gmail.com'} onChange={props.onChangeHandlerEmail}/>
+            <div><SuperInputText type={'password'} placeholder={'zxcasdqwe123'} onChange={props.onChangeHandlerPassword}/>
             </div>
             <div><SuperCheckbox onChange={props.onChangeHandlerRememberMe}>Remember Me</SuperCheckbox></div>
             <div><SuperButton onClick={props.onClickHandler}>Sign In</SuperButton></div>

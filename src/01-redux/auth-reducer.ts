@@ -35,7 +35,7 @@ export const authReducer = (state: InitialStateType = initialState, action: Auth
 
 //actions
 export const setIsLoggedIn = (isLoggedIn: boolean) => ({type: 'auth/SET-IS-LOGGED-IN', isLoggedIn} as const)
-export const setLoginError = (loginError: string) => ({type: 'auth/SET-LOGIN-ERROR', loginError} as const)
+export const setLoginError = (loginError: string|null) => ({type: 'auth/SET-LOGIN-ERROR', loginError} as const)
 
 //thunks
 export const loginTC = (email: string, password: string, rememberMe: boolean): AppThunkType => dispatch => {

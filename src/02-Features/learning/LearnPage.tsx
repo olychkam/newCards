@@ -1,95 +1,89 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {CardType, ResponseCardType} from "../../00-API/cards-api";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchCardsTC, setCardGradeTC} from "../../01-redux/cards-reducer";
+import {CardType, fetchCardsTC, setCardGradeTC} from "../../01-redux/cards-reducer";
 import {AppRootStateType} from "../../01-redux/store";
-import {PackType} from "../../00-API/packs-api";
 import {getRandomCard} from "../../05-utils/u1-error/u2-getRandomCard/getRandomCard";
-import styles from './LearnPage.module.css';
+import style from './LearnPage.module.css';
+import {LearnCard} from "./LearnCard/LearnCard";
+import ErrorSnackBar from "../../03-Components/c7-ErrorSnackBar/ErrorSnackBar";
+import {useParams} from "react-router-dom";
 
-type LearnPagePropsType = {
-    cardsPack_id: string
-    onModalClose: () => void
-}
 
 const grades = ["Didn't know", 'Forgot', 'Confused', 'A lot of thought', 'Knew'];
 
-const LearnPage: React.FC<LearnPagePropsType> = (props) => {
-    const {cardsPack_id} = props
-    const packName = useSelector<AppRootStateType, PackType | undefined>(state => state.packs.cardPacks && state.packs.cardPacks.find(pack => pack._id === cardsPack_id));
-    const cards = useSelector<AppRootStateType, Array<CardType>>(state => state.cards.cards);
-    const [isChecked, setIsChecked] = useState<boolean>(false);
-    const [first, setFirst] = useState<boolean>(true);
-    const [grade, setGrade] = useState(grades.indexOf(grades[0]) + 1)
-    const [card, setCard] = useState<CardType>({
-        _id: 'fake',
-        cardsPack_id: '',
-        answer: 'answer fake',
-        question: 'question fake',
-        grade: 0,
-        shots: 0,
-        type: '',
-        rating: 0,
-        user_id: '',
-        __v: 0,
-        created: '',
-        updated: '',
-    });
+export const LearningPage: React.FC = React.memo(() => {
+        const error = useSelector<AppRootStateType, string | null>(state => state.app.status)
+        const cards = useSelector<AppRootStateType, Array<CardType>>(state => state.cards.cards);
+        const [isChecked, setIsChecked] = useState<boolean>(false);
+        const [first, setFirst] = useState<boolean>(true);
+        const {id} = useParams<{ id: string }>();
+        const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
-    useEffect(() => {
-        if (first) {
-            dispatch(fetchCardsTC({cardsPack_id}));
-            setFirst(false);
-        }
-        if (cards && cards.length > 0) setCard(getRandomCard(cards));
-        return () => {
-        }
-    }, [dispatch, cardsPack_id, cards, first]);
-
-    const onNext = (grade: number, id: string) => {
-        setIsChecked(false);
-        dispatch(setCardGradeTC(grade, id))
-        if (cards && cards.length > 0) {
-            setCard(getRandomCard(cards));
-        }
-    }
-
-    const checkAnswer = () => {
-        setIsChecked(true)
-    }
-
-    return (
-        <div className={styles.learnPageContainer}>
-            <h3>Learn "{packName?.name}"</h3>
-            {!isChecked &&
-            <div className={styles.questionBlock}>
-                <h4>Question: "{card.question}"</h4>
-                <div className={styles.buttonsBlock}>
-                    <button className={styles.cancelBtn} onClick={props.onModalClose}>cancel</button>
-                    <button className={styles.saveBtn} onClick={checkAnswer}>show answer</button>
-                </div>
-            </div>
+        useEffect(() => {
+            if (first) {
+                dispatch(fetchCardsTC(id))
+                setFirst(false)
             }
-            {isChecked && (
-                <div className={styles.answerBlock}>
-                    <h4>Question: "{card.question}"</h4>
-                    <h4>Answer: "{card.answer}"</h4>
-                    <div className={styles.answer}>
-                        <h4>Rate yourself: </h4>
-                        {/* <SuperRadio name={'radio'}
-                                    value={grade}
-                                    options={grades}
-                                    onChangeOption={setGrade}/>
-                    </div>*/}
-                        <div className={styles.buttonsBlock}>
-                            <button className={styles.cancelBtn} onClick={props.onModalClose}>cancel</button>
-                            <button className={styles.saveBtn} onClick={() => onNext(grade, card._id)}>next</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-export default LearnPage;
+            if (cards.length > 0) {
+                setCard(getRandomCard(cards))
+                return () => {
+                    console.log('Learning Page clear effect ')
+                }
+            } else {
+
+            }
+        }, [cards, dispatch])
+
+
+        const [card, setCard] = useState<CardType>({
+            _id: 'fake',
+            cardsPack_id: '',
+            answer: 'answer fake',
+            question: 'question fake',
+            grade: 0,
+            shots: 0,
+            type: '',
+            rating: 0,
+            user_id: '',
+            __v: 0,
+            created: '',
+            updated: '',
+        });
+
+        useEffect(() => {
+            if (first) {
+                dispatch(fetchCardsTC(card.cardsPack_id));
+                setFirst(false);
+            }
+            if (cards && cards.length > 0) setCard(getRandomCard(cards));
+            return () => {
+            }
+        }, [dispatch, cards, first]);
+
+        const onNext = useCallback((grade: number) => {
+            setIsChecked(false);
+            if (cards.length > 0) {
+                if (!card._id) {
+                    console.log('error in useCallback')
+                }
+                dispatch(setCardGradeTC(grade, card._id))
+                setCard(getRandomCard(cards))
+            } else {
+                alert(`Something bad 'onNextCard'`)
+            }
+        }, [cards, card])
+
+
+        return (
+            <div className={style.pageContainer}>
+                {cards.length > 0 && <LearnCard card={card}
+                                                grades={grades}
+                                                checked={isChecked}
+                                                setIsChecked={setIsChecked}
+                                                onNextCard={onNext}/>
+                }
+                {error && <ErrorSnackBar errorMessage={error}/>}
+            </div>
+        )
+    }
+)

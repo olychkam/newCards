@@ -6,11 +6,11 @@ import LoginContainer from "../02-Features/auth/login/LoginContainer";
 import RegistrationContainer from "../02-Features/auth/registration/RegistrationContainer";
 import Profile from "../02-Features/profile/Profile";
 import RecoveryPassword from "../02-Features/recovery-password/recoveryPassword";
-import Cards from "../02-Features/cards/Cards";
+import {Cards} from "../02-Features/cards/Cards";
 import Test from "../02-Features/test/Test";
 import {ResetPassword} from "../02-Features/reset-password/ResetPassword";
 import {Packs} from "../02-Features/packs/Packs";
-import LearnPage from "../02-Features/learning/LearnPage";
+import {LearningPage} from "../02-Features/learning/LearnPage";
 
 export const PATH = {
     LOGIN: "/login",
@@ -39,9 +39,9 @@ function Routes() {
                 <Route path={PATH.NEW_PASSWORD} render={() => <RecoveryPassword/>}/>
                 <Route path={PATH.PACKS} render={() => <Packs/>}/>
                 <Route path={`${PATH.CARDS}/:id`}  render={() => <Cards />}/>
-{/*
-                <Route path={PATH.LEARNING} render={() => <LearnPage/>}/>
-*/}
+
+                <Route path={PATH.LEARNING + '/:id'} exact render={() => <LearningPage/>}/>
+
                 <Route path={PATH.TEST} render={() => <Test/>}/>
 {/*
                 <Route path={PATH.MODALS} render={() => <ModalsPage />}/>

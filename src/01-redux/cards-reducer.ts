@@ -1,55 +1,103 @@
-import {CardCreateType, cardsAPI, CardType, FetchCardsPayloadType, ResponseCardType} from "../00-API/cards-api";
-import {AppThunkType} from "./store";
+import {cardsAPI} from "../00-API/cards-api";
+import {AppActionType, AppThunkType} from "./store";
 import {setAppStatusAC, setIsInitializedAC} from "./app-reducer";
+import {addCardPacks} from "./packs-reducer";
 
 
-export type CardsReducerActionType = ReturnType<typeof setCardsDataAC> | ReturnType<typeof setCardGradeAC>
+export type CardsReducerActionType = ReturnType<typeof setCards>
+    | ReturnType<typeof setFilter>
+    | ReturnType<typeof setGrade>
+    | ReturnType<typeof createCard>
+export type CardType = {
+    answer: string,
+    question: string,
+    cardsPack_id: string,
+    grade: number,
+    rating: number,
+    shots?: number,
+    type: string,
+    user_id?: string,
+    created?: string,
+    updated?: string,
+    __v?: 0,
+    _id: string,
+}
 
-const initialState = {} as ResponseCardType
+export type CardsFilterType = {
+    packName: string
+    min: number
+    max: number
+}
 
-type InitialStateType = typeof initialState
+const initialState = {
+    cards: [] as CardType[],
+    page: 1,
+    pageCount: 3,
+    cardsTotalCount: 5,
+    packUserId: '',
+    filter: {
+        packName: '',
+        min: 0,
+        max: 15,
+    } as CardsFilterType
+} as const
 
-export const cardsReducer = (state: InitialStateType = initialState, action: CardsReducerActionType): InitialStateType => {
+export type CardsInitialStateType = typeof initialState
+
+export const cardsReducer = (state: CardsInitialStateType = initialState, action: CardsReducerActionType) => {
     switch (action.type) {
-        case 'CARDS/SET_CARDS':
-            return {
-                ...state, ...action.cardsData
-            }
-        case "CARDS/SET_CARD_GRADE":
+        case 'CARDS/CARDS/SET-FILTER':
+        return {...state, filter: action.payload.filter}
+        case 'CARDS/CARDS/SET-CARDS':
+            return {...state, cards: action.cards}
+        case 'CARDS/CARDS/ADD-CARD':
+            return {...state, cards: [action.newCard, ...state.cards]}
+        case 'CARDS/CARDS/SET-GRADE':
             return {
                 ...state,
-                cards: state.cards.map(c => c.cardsPack_id === action.id ? {...c, grade: action.grade} : c)
+                cards: state.cards.map(
+                    (card, i) => card._id === action.payload.id
+                        ? {...card, grade: action.payload.grade}
+                        : card
+                )
             }
+
         default:
             return state
     }
 }
+export const setCards = (cards: CardType[]) => ({type: 'CARDS/CARDS/SET-CARDS', cards} as const)
 
-const setCardsDataAC = (cardsData: ResponseCardType) =>
-    ({type: 'CARDS/SET_CARDS', cardsData} as const)
-const setCardGradeAC = (grade: number, id: string) =>
-    ({type: 'CARDS/SET_CARD_GRADE', grade, id} as const)
+export const createCard = (newCard: CardType) => ({type: 'CARDS/CARDS/ADD-CARD', newCard} as const)
 
-export const fetchCardsTC = (data: FetchCardsPayloadType): AppThunkType => dispatch => {
+export const setFilter = (filter: CardsFilterType) => ({
+    type: 'CARDS/CARDS/SET-FILTER', payload: {
+        filter
+    }
+} as const)
+
+export const setGrade = (grade: number, id: string) => ({
+    type: 'CARDS/CARDS/SET-GRADE',
+    payload: {
+        id,
+        grade
+    }
+} as const)
+
+export const fetchCardsTC = (cardsPackId: string): AppThunkType => dispatch => {
     dispatch(setAppStatusAC('loading'))
-    cardsAPI.fetchCards({...data})
+    cardsAPI.fetchCards(cardsPackId)
         .then(response => {
-            dispatch(setCardsDataAC(response))
             dispatch(setAppStatusAC('succeeded'))
-        })
-        .catch(error => {
-            console.log(error)
-            dispatch(setIsInitializedAC(true))
-            dispatch(setAppStatusAC('failed'))
+            dispatch(setCards(response.data.cards))
         })
 }
-
-export const createCardTC = (card: Partial<CardCreateType>): AppThunkType => dispatch => {
+export const createCardTC = (card: CardType): AppThunkType => dispatch => {
     dispatch(setAppStatusAC('loading'))
     cardsAPI.createCard(card)
-        .then(response => {
-            const {cardsPack_id} = response.newCard
-            dispatch(fetchCardsTC({cardsPack_id}))
+        .then(() => {
+            //const {cardsPack_id} = response.data
+            dispatch(fetchCardsTC(card.cardsPack_id))
             dispatch(setAppStatusAC('succeeded'))
         })
         .catch(error => {
@@ -59,12 +107,14 @@ export const createCardTC = (card: Partial<CardCreateType>): AppThunkType => dis
         })
 }
 
-export const updateCardTC = (_id: string, question: string, answer: string): AppThunkType => dispatch => {
+export const updateCardTC = (card: CardType): AppThunkType => dispatch => {
     dispatch(setAppStatusAC('loading'))
-    cardsAPI.updateCard(_id, question, answer)
-        .then(response => {
-            const {cardsPack_id} = response.updatedCard
-            dispatch(fetchCardsTC({cardsPack_id}))
+    cardsAPI.updateCard(card)
+        .then(() => {
+            /*
+                        const {cardsPack_id} = response.updatedCard
+            */
+            dispatch(fetchCardsTC(card.cardsPack_id))
             dispatch(setAppStatusAC('succeeded'))
         })
         .catch(error => {
@@ -79,7 +129,7 @@ export const deleteCardTC = (id: string): AppThunkType => dispatch => {
     cardsAPI.deleteCard(id)
         .then(response => {
             const {cardsPack_id} = response.deletedCard
-            dispatch(fetchCardsTC({cardsPack_id}))
+            dispatch(fetchCardsTC(cardsPack_id))
             dispatch(setAppStatusAC('succeeded'))
         })
         .catch(error => {
@@ -92,10 +142,10 @@ export const deleteCardTC = (id: string): AppThunkType => dispatch => {
 export const setCardGradeTC = (grade: number, id: string): AppThunkType => dispatch => {
     dispatch(setAppStatusAC('loading'))
     cardsAPI.setCardGrade(grade, id)
-        .then(response => {
-            const id = response.data.updatedGrade.card_id
-            const grade = response.data.updatedGrade.grade
-            dispatch(setCardGradeAC(grade, id))
+        .then(res => {
+            const id = res.data._id
+            const grade = res.data.grade
+            dispatch(setGrade(grade, id))
             dispatch(setAppStatusAC('succeeded'))
         })
         .catch(error => {

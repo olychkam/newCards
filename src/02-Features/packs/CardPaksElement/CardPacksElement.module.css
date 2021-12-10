@@ -1,0 +1,30 @@
+.inactive {
+    color: #2d4052;
+}
+.active {
+    color: #fa6e4f;
+}
+
+.inactive:hover {
+    color: #fa6e4f;
+}
+
+tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+tr {
+    border-top: 1px solid #d7d7d7;
+    font-family: Sintony, sans-serif;
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 700;
+}
+@media only screen and (max-width: 470px) {
+   tr a {
+        font-size: 10px;
+        line-height: 10px;
+        font-weight: 400;
+        padding: 5px;
+    }
+}

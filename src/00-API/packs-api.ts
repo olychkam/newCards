@@ -2,21 +2,21 @@ import {instance} from "./api";
 
 export type PackType = {
     _id: string,
-    user_id: string,
-    user_name: string,
-    private: boolean,
+    user_id?: string,
+    user_name?: string,
+    private?: boolean,
     name: string,
-    path: string,
-    grade: number,
-    shots: number,
-    deckCover: string,
-    cardsCount: number,
+    path?: string,
+    grade?: number,
+    shots?: number,
+    deckCover?: string,
+    cardsCount?: number,
     type: string,
-    rating: number,
-    created: string,
-    updated: string,
-    more_id: string,
-    __v: number
+    rating?: number,
+    created?: string,
+    updated?: string,
+    more_id?: string,
+    __v?: number
 }
 
 export type ResponsePackType = {
@@ -55,12 +55,10 @@ export type CardsPackCreateType = {
 
 
 export const packsAPI = {
-    fetchPacks(data: FetchPacksPayloadType) {
-        return instance.get<ResponsePackType>(`cards/pack?`,
-            {params: {...data}})
-            .then(response => response.data)
+    fetchPacks(page: number, pageCount: number, packName: string = '', min: number, max: number, user_id: string) {
+        return instance.get<ResponsePackType>(`cards/pack?page=${page}&pageCount=${pageCount}&packName=${packName}&min=${min}&max=${max}&user_id=${user_id}`);
     },
-    createPack(cardsPack: Partial<CardsPackCreateType>) {
+    createPack(cardsPack: PackType) {
         return instance.post(`cards/pack`, {cardsPack})
             .then(response => response.data)
     },
@@ -68,8 +66,8 @@ export const packsAPI = {
         return instance.delete(`cards/pack?id=${id}`)
             .then(response => response.data)
     },
-    updatePack(_id: string, name ?: string) {
-        return instance.put(`cards/pack`, {cardsPack: {_id, name}})
+    updatePack(cardsPack:PackType) {
+        return instance.put(`cards/pack`, {cardsPack})
             .then(response => response.data)
     }
 }

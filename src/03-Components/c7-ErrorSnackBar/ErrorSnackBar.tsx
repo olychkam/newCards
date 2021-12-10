@@ -3,18 +3,21 @@ import s from './Error.module.css'
 import {AppRootStateType} from "../../01-redux/store";
 import {selectorError} from "../../01-redux/selectors/app-selectors";
 import {setAppStatusAC} from "../../01-redux/app-reducer";
+import {useState} from "react";
+import {setLoginError} from "../../01-redux/auth-reducer";
 
 type ErrorBarPropsType = {
     errorMessage: string
 }
 
 const ErrorSnackBar = (props: ErrorBarPropsType) => {
-
-    const dispatch = useDispatch()
     const error = useSelector<AppRootStateType, string | null>(selectorError)
-
-    const onClickHandler = () => dispatch(setAppStatusAC('idle'))
-
+    const dispatch = useDispatch()
+    const onClickHandler = () => {
+        dispatch(setAppStatusAC('idle'))
+        dispatch(setLoginError(null))
+        console.log('error:error')
+    }
     return (
         <div className={error ? `${s.notification}` : `: ${s.closeNotification}`}>
             <div className={s.text}> {props.errorMessage} </div>

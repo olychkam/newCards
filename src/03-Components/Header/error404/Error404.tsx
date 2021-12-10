@@ -1,5 +1,5 @@
 import React from "react";
-import classes from './Error404.module.css'
+import classes from './Error404.module.css';
 
 function Error404() {
     return (

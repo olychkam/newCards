@@ -1,119 +1,62 @@
-.modalBackground {
+.modal {
+    height: 100%;
+    width: 100%;
     position: fixed;
+    background-color: rgba(0, 0, 0, 0.4);
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: black;
-    opacity: 0.35;
-    z-index: 20;
-}
-
-.modalMessage {
-    position: fixed;
-    z-index: 21;
-    padding: 0 24px;
-    box-sizing: border-box;
-    background: #fbfef9;
-    border-radius: 2px;
-}
-
-.line {
-    height: 1px;
-    width: 100%;
-    background: #f0f6ed;
-}
-
-.modalMessage h3 {
-    margin: 15px 0;
-    padding: 0;
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 27px;
-    color: #2D2E46;
-}
-
-.info {
-    margin: 25px 0;
-}
-
-.input {
-    margin: 31px 0 36px;
-}
-
-.buttonBlock {
     display: flex;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.buttonBlock button {
-    width: 124px;
-    height: 36px;
-    border-radius: 30px;
-    border: none;
-    letter-spacing: 0.01em;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 19px;
-    text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-}
-
-.cancelBtn {
-    background-color: #EFF6D5;
-    color: #9EBB2A;
-}
-
-.saveBtn {
-    background-color: #9EBB2A;
-    color: #EFF6D5;
-}
-
-.delBtn {
-    background: #F1453D;
-    color: white;
-    box-shadow: 0px 4px 18px rgba(241, 69, 61, 0.35), inset 0px 1px 0px rgba(255, 255, 255, 0.3);
-}
-
-.info p {
-    margin: 0;
-}
-
-.info p span:first-child {
-    font-weight: bold;
-}
-
-h3 {
-    display: flex;
-    justify-content: space-between;
+    text-align: center;
     align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: 0.5s;
+    pointer-events: none;
+    z-index: 200;
 }
 
-.input input {
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 24px;
-    color: #9EBB2A;
-    border: none;
-    border-bottom: 2px solid #EFF6D5;
-    background: #fbfef9;
-    width: 100%;
+.modalActive {
+    opacity: 1;
+    pointer-events: all;
+
 }
 
-.input input:focus {
-    outline: none;
+.modalContent {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: white;
+    transform: scale(0.5);
+    transition: 0.4s all;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+
 }
 
-.input h4 {
-    margin: 0;
-    color: #cfe281;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 20px;
+.modalContent p {
+    font-family: Poppins, sans-serif;
+    color: #fa6e4f;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 17px;
+
 }
 
-.modalMessage button:hover, h3 img:hover {
+.btn {
+    position: absolute;
+    right: 20px;
+    padding: 0;
     cursor: pointer;
+    background: transparent;
+    border: 0;
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.2;
+}
+
+.modalContentActive {
+    transform: scale(1);
 }

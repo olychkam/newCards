@@ -1,4 +1,4 @@
-import {CardType} from "../../../00-API/cards-api";
+import {CardType} from "../../../01-redux/cards-reducer";
 
 export const getRandomCard = (cards: Array<CardType>) => {
     const sum = cards.reduce((acc, card) => acc + (6 - card.grade) * (6 - card.grade), 0);

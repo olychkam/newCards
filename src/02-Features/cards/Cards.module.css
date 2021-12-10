@@ -1,24 +1,28 @@
-
-.cardsContainer {
-    margin: 0 auto;
-    width: 1008px;
-    height: 636px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #282c34;
-    border-radius: 8px;
-}
-.searchBlock {
-    width: 90%;
+.cardsPage {
     display: flex;
     justify-content: space-around;
-    align-items: center;
+    z-index: 100;
+    width: 90%;
+    background-color: #fff;
+    padding: 30px;
+    flex-wrap: wrap;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgb(0 0 50%);
+    text-align: center;
 }
+
+
 .search {
-    width: 60%;
+    width: 30%;
+    flex-wrap: wrap;
+    margin-top: 20px;
 }
-.buttonsBlock{
+
+.cardsBlock {
+    width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+
 }

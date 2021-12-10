@@ -4,9 +4,9 @@ import {NavLink} from "react-router-dom";
 import CellWithButtons from "./CellWithButtons";
 import {Table} from "./Table";
 import {PackType} from "../../00-API/packs-api";
-import {CardType} from "../../00-API/cards-api";
 import {AppRootStateType} from "../../01-redux/store";
 import {PATH} from "../Routes";
+import {CardType} from "../../01-redux/cards-reducer";
 
 
 type TableContainerPropsType = {
@@ -36,7 +36,9 @@ export const TableContainer: React.FC<TableContainerPropsType> = (props) => {
             let arr = []
             arr.push(<NavLink to={`${PATH.CARDS}/` + props.packs[i]._id}> {props.packs[i].name}</NavLink>)
             arr.push(props.packs[i].cardsCount)
+/*
             arr.push(props.packs[i].updated.slice(0, -14))
+*/
             arr.push(props.packs[i].user_name)
             arr.push(
                 <CellWithButtons deleteCardsPack={props.deleteCallback}
@@ -54,7 +56,7 @@ export const TableContainer: React.FC<TableContainerPropsType> = (props) => {
             let arr = []
             arr.push(props.cards[i].question.length > 30 ? props.cards[i].question.slice(0, 30) + "..." : props.cards[i].question)
             arr.push(props.cards[i].answer.length > 68 ? props.cards[i].answer.slice(0, 68) + "..." : props.cards[i].answer)
-            arr.push(props.cards[i].updated.slice(0, -14))
+            //arr.push(props.cards[i].updated.slice(0, -14))
             arr.push(props.cards[i].grade)
             arr.push(
                 <CellWithButtons deleteCardsPack={props.deleteCallback}
@@ -70,6 +72,11 @@ export const TableContainer: React.FC<TableContainerPropsType> = (props) => {
     }
 
     return (
-        <Table titleColumns={props.titles} items={array}/>
+        <div>
+{/*
+            <Table titleColumns={props.titles} items={array}/>
+*/}
+
+        </div>
     )
 }
