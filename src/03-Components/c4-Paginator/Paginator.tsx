@@ -1,59 +1,55 @@
-import React, {useState} from "react";
-import s from "./Paginator.module.css";
+import React, {useState} from 'react'
+import classnames from 'classnames'
+import s from './Paginator.module.css'
 import SuperButton from "../c2-SuperButton/SuperButton";
 
-type PaginatorPropsType = {
-    totalItemsCount: number
-    pageSize: number
+type PropsType = {
     currentPage: number
-    onPageChanged: (currentPage: number) => void
-    portionSize: number
+    onPageChanged: (p: number) => void
+    pageSize: number
+    totalItemsCount: number
+    portionSize?: number
 }
 
-const Paginator: React.FC<PaginatorPropsType> = (
-    {
-        totalItemsCount,
-        pageSize ,
-        currentPage,
-        onPageChanged,
-        portionSize,
-        ...restProps
-    }
-
+export const Paginator: React.FC<PropsType> = (
+    {currentPage, onPageChanged, pageSize, totalItemsCount, portionSize = 10}
 ) => {
-    const pagesCount = Math.ceil(totalItemsCount / pageSize)
+
+    const pageCount = Math.ceil(totalItemsCount / pageSize)
+
     const pages = []
-    for (let i = 1; i <= pagesCount; i ++) {
+    for (let i = 1; i <= pageCount; i++) {
         pages.push(i)
     }
 
-    const portionsCount = Math.ceil(pagesCount / portionSize)
-    const [portionNumber, setPortionNumber] = useState(1)
-    const leftPortionNumber = (portionNumber - 1) * portionSize + 1;
-    const rightPortionNumber = portionNumber * portionSize;
+    const portionCount = Math.ceil(pageCount / portionSize)
+    const [portionNumber, setPortionNumber] = useState<number>(1)
+    const leftPortionPageNumber = (portionNumber - 1) * portionSize + 1
+    const rightPortionPageNumber = portionNumber * portionSize + 1
+
+    const prevPortionNumberHandler = () => {
+        setPortionNumber(portionNumber - 1)
+    }
+
+    const nextPortionNumberHandler = () => setPortionNumber(portionNumber + 1)
 
     return (
-        <div className={s.paginationContainer}>
-            {portionNumber > 1 &&
-            <SuperButton onClick={() => {
-                setPortionNumber(portionNumber - 1)
-            }}>Previous</SuperButton>
-            }
-            {
-                pages.filter((p) => p >= leftPortionNumber && p <= rightPortionNumber)
-                    .map((p) => {
-                        return <span className={s.pageNumber + " " + (currentPage === p ? s.currentPage : "")}
-                            // className={s.pageNumber}
-                                     key={p}
-                                     onClick={(e) => onPageChanged(p)}>{p}</span>
-                    })
-            }
-            {portionNumber < portionsCount &&
-            <SuperButton onClick={() => {
-                setPortionNumber(portionNumber + 1)
-            }}>Next</SuperButton>}
+        <div className={s.usersPageNumber}>
+            {portionCount > 1
+            && <SuperButton onClick={prevPortionNumberHandler}>PREV</SuperButton>}
+            {pages
+                .filter(p => p >= leftPortionPageNumber && p <= rightPortionPageNumber)
+                .map((p, i) => {
+                    return <span key={`number_items${i}`}
+                                 className={classnames({
+                                     [s.selected]: currentPage === p
+                                 }, s.pageNumber)}
+                                 onClick={() => {
+                                     onPageChanged(p)
+                                 }}>{p}</span>
+                })}
+            {portionCount > portionNumber
+            && <SuperButton onClick={nextPortionNumberHandler}>NEXT</SuperButton>}
         </div>
-    );
+    )
 }
-
-export default Paginator;
