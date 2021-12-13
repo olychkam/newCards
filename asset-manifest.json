@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/newCards/static/css/main.20e8d5dc.chunk.css",
+    "main.js": "/newCards/static/js/main.b145f8b6.chunk.js",
+    "main.js.map": "/newCards/static/js/main.b145f8b6.chunk.js.map",
+    "runtime-main.js": "/newCards/static/js/runtime-main.2b1ea47a.js",
+    "runtime-main.js.map": "/newCards/static/js/runtime-main.2b1ea47a.js.map",
+    "static/js/2.8611e708.chunk.js": "/newCards/static/js/2.8611e708.chunk.js",
+    "static/js/2.8611e708.chunk.js.map": "/newCards/static/js/2.8611e708.chunk.js.map",
+    "static/js/3.3b2183de.chunk.js": "/newCards/static/js/3.3b2183de.chunk.js",
+    "static/js/3.3b2183de.chunk.js.map": "/newCards/static/js/3.3b2183de.chunk.js.map",
+    "index.html": "/newCards/index.html",
+    "static/css/main.20e8d5dc.chunk.css.map": "/newCards/static/css/main.20e8d5dc.chunk.css.map",
+    "static/js/2.8611e708.chunk.js.LICENSE.txt": "/newCards/static/js/2.8611e708.chunk.js.LICENSE.txt",
+    "static/media/Study Point._free-file.2aeaf9f9.png": "/newCards/static/media/Study Point._free-file.2aeaf9f9.png",
+    "static/media/unnamed.68a5a740.jpg": "/newCards/static/media/unnamed.68a5a740.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2b1ea47a.js",
+    "static/js/2.8611e708.chunk.js",
+    "static/css/main.20e8d5dc.chunk.css",
+    "static/js/main.b145f8b6.chunk.js"
+  ]
+}
